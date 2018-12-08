@@ -1,0 +1,69 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "com.pigeon.it.sginx"
+        minSdkVersion 16
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+
+        release {
+            storeFile file('../pigeon88-release.keystore')
+            storePassword "release43"
+            keyAlias "pigeon88"
+            keyPassword "release43"
+        }
+
+        develop {
+            storeFile file('../pigeon88-develop.jks')
+            storePassword "develop"
+            keyAlias "pigeon88"
+            keyPassword "develop"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            signingConfig signingConfigs.develop
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    //自动追加版本号和版本名称
+    /*applicationVariantsandroid.applicationVariants.all { variant ->
+        variant.outputs.each {
+            output -> output.outputFile = new File(output.outputFile.parent, "itSginX_v" + variant.versionName + "_" + new Date().format("yyMMdd") + "_" + buildType.name + ".apk")
+        }
+    }*/
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "itSginX_v${variant.versionName}_" + new Date().format("yyMMdd") + "_${buildType.name}.apk"
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
+}
